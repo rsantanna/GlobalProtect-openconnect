@@ -126,7 +126,7 @@ void GPClient::updateConnectionStatus(const GPClient::VpnStatus &status)
             ui->statusImage->setStyleSheet("image: url(:/images/not_connected.png); padding: 15;");
             ui->connectButton->setText("Connect");
             ui->connectButton->setDisabled(false);
-            ui->portalInput->setReadOnly(false);
+            ui->portalInput->setDisabled(false);
 
             systemTrayIcon->setIcon(QIcon{ ":/images/not_connected.png" });
             connectAction->setEnabled(true);
@@ -137,7 +137,7 @@ void GPClient::updateConnectionStatus(const GPClient::VpnStatus &status)
         case VpnStatus::pending:
             ui->statusImage->setStyleSheet("image: url(:/images/pending.png); padding: 15;");
             ui->connectButton->setDisabled(true);
-            ui->portalInput->setReadOnly(true);
+            ui->portalInput->setDisabled(true);
 
             systemTrayIcon->setIcon(QIcon{ ":/images/pending.png" });
             connectAction->setEnabled(false);
@@ -149,7 +149,7 @@ void GPClient::updateConnectionStatus(const GPClient::VpnStatus &status)
             ui->statusImage->setStyleSheet("image: url(:/images/connected.png); padding: 15;");
             ui->connectButton->setText("Disconnect");
             ui->connectButton->setDisabled(false);
-            ui->portalInput->setReadOnly(true);
+            ui->portalInput->setDisabled(true);
 
             systemTrayIcon->setIcon(QIcon{ ":/images/connected.png" });
             connectAction->setEnabled(true);
@@ -167,7 +167,12 @@ void GPClient::onSystemTrayActivated(QSystemTrayIcon::ActivationReason reason)
     switch (reason) {
         case QSystemTrayIcon::Trigger:
         case QSystemTrayIcon::DoubleClick:
-            this->activate();
+            if (this->isVisible()){
+                this->hide();
+            } else {
+                this->show();
+                this->activate();
+            }
             break;
         default:
             break;
